@@ -10,6 +10,25 @@
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 <body>
+    <!-- ✅ KEAMANAN LANGSUNG DI HTML -->
+  <script>
+    (function() {
+      const pwd = 'herba2026'; // ✅ GANTI PASSWORD
+      const token = localStorage.getItem('herbaprima_admin');
+      const valid = token && token === pwd;
+      
+      if (!valid) {
+        const input = prompt('🔒 Password Admin:');
+        if (input === pwd) {
+          localStorage.setItem('herbaprima_admin', pwd);
+        } else {
+          alert('❌ Akses ditolak!');
+          window.location.href = 'index.html';
+        }
+      }
+    })();
+  </script>
+  
   <!-- HEADER -->
   <header class="header sticky">
     <div class="container header-inner">
