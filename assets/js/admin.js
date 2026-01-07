@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────
 
 (function() {
-  const ADMIN_PASSWORD = 'herbaprima2025'; // ✅ GANTI DENGAN PASSWORD ANDA
+  const ADMIN_PASSWORD = 'herba2026'; // ✅ GANTI DENGAN PASSWORD ANDA
   const ACCESS_KEY = 'herbaprima_admin_token';
   
   function isAuthenticated() {
