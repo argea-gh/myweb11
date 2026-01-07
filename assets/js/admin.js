@@ -1,4 +1,50 @@
 // ──────────────────────────────────────────
+// 🔐 KEAMANAN ADMIN — PASSWORD PROTECTION
+// ──────────────────────────────────────────
+
+(function() {
+  const ADMIN_PASSWORD = 'herba2026'; // ✅ GANTI DENGAN PASSWORD ANDA
+  const ACCESS_KEY = 'admin_access_token';
+  
+  function checkAccess() {
+    const token = localStorage.getItem(ACCESS_KEY);
+    const now = new Date().getTime();
+    
+    // Cek apakah sudah login & belum kadaluarsa (24 jam)
+    if (token) {
+      const { password, timestamp } = JSON.parse(token);
+      if (password === ADMIN_PASSWORD && (now - timestamp) < 24 * 60 * 60 * 1000) {
+        return true;
+      }
+      localStorage.removeItem(ACCESS_KEY); // hapus token kadaluarsa
+    }
+    
+    return false;
+  }
+
+  function requestPassword() {
+    const pass = prompt("🔒 Panel Admin Herbaprima\n\nMasukkan password:");
+    if (pass === ADMIN_PASSWORD) {
+      const token = JSON.stringify({
+        password: pass,
+        timestamp: new Date().getTime()
+      });
+      localStorage.setItem(ACCESS_KEY, token);
+      return true;
+    }
+    return false;
+  }
+
+  // Jalankan saat script dimuat
+  if (!checkAccess()) {
+    if (!requestPassword()) {
+      alert("❌ Akses ditolak! Anda akan dialihkan ke website utama.");
+      window.location.href = "index.html";
+    }
+  }
+})();
+
+// ──────────────────────────────────────────
 // Admin Panel Logic (localStorage-based)
 // ──────────────────────────────────────────
 
