@@ -1,46 +1,50 @@
 // ──────────────────────────────────────────
-// 🔐 KEAMANAN ADMIN — PASSWORD PROTECTION
+// 🔐 KEAMANAN ADMIN — VERSI 100% JALAN
 // ──────────────────────────────────────────
 
 (function() {
-  const ADMIN_PASSWORD = 'herba2026'; // ✅ GANTI DENGAN PASSWORD ANDA
-  const ACCESS_KEY = 'admin_access_token';
+  const ADMIN_PASSWORD = 'herbaprima2025'; // ✅ GANTI DENGAN PASSWORD ANDA
+  const ACCESS_KEY = 'herbaprima_admin_token';
   
-  function checkAccess() {
+  function isAuthenticated() {
     const token = localStorage.getItem(ACCESS_KEY);
-    const now = new Date().getTime();
+    if (!token) return false;
     
-    // Cek apakah sudah login & belum kadaluarsa (24 jam)
-    if (token) {
-      const { password, timestamp } = JSON.parse(token);
-      if (password === ADMIN_PASSWORD && (now - timestamp) < 24 * 60 * 60 * 1000) {
-        return true;
+    try {
+      const { pass, exp } = JSON.parse(token);
+      return pass === ADMIN_PASSWORD && Date.now() < exp;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function grantAccess() {
+    const expires = Date.now() + 24 * 60 * 60 * 1000; // 24 jam
+    localStorage.setItem(ACCESS_KEY, JSON.stringify({
+      pass: ADMIN_PASSWORD,
+      exp: expires
+    }));
+  }
+
+  function requireAuth() {
+    if (!isAuthenticated()) {
+      const pass = prompt("🔒 Panel Admin Herbaprima\n\nMasukkan password:");
+      if (pass === ADMIN_PASSWORD) {
+        grantAccess();
+      } else {
+        alert("❌ Password salah! Mengalihkan ke website utama...");
+        window.location.href = "index.html";
+        return false;
       }
-      localStorage.removeItem(ACCESS_KEY); // hapus token kadaluarsa
     }
-    
-    return false;
+    return true;
   }
 
-  function requestPassword() {
-    const pass = prompt("🔒 Panel Admin Herbaprima\n\nMasukkan password:");
-    if (pass === ADMIN_PASSWORD) {
-      const token = JSON.stringify({
-        password: pass,
-        timestamp: new Date().getTime()
-      });
-      localStorage.setItem(ACCESS_KEY, token);
-      return true;
-    }
-    return false;
-  }
-
-  // Jalankan saat script dimuat
-  if (!checkAccess()) {
-    if (!requestPassword()) {
-      alert("❌ Akses ditolak! Anda akan dialihkan ke website utama.");
-      window.location.href = "index.html";
-    }
+  // ✅ JALANKAN SAAT HALAMAN DIBUKA
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', requireAuth);
+  } else {
+    requireAuth();
   }
 })();
 
